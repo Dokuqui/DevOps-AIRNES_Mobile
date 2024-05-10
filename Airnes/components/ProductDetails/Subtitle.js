@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
+import { GlobalStyles } from "../../constants/style";
 
 function Subtitle({ children }) {
   return (
@@ -16,13 +17,13 @@ const styles = StyleSheet.create({
     margin: 4,
     marginHorizontal: 12,
     marginVertical: 4,
-    borderBottomColor: "#e2b497",
+    borderBottomColor: GlobalStyles.colors.primary900,
     borderBottomWidth: 2,
   },
   subtitle: {
-    color: "#e2b497",
-    fontSize: 18,
-    fontWeight: "bold",
+    color: GlobalStyles.colors.primary500,
+    fontSize: 20,
+    fontFamily: "open-bold",
     textAlign: "center",
   },
 });

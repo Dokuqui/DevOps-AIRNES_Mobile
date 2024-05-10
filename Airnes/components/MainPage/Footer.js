@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const Footer = () => {
+  const year = new Date().getFullYear();
+
   return (
     <View style={styles.container}>
       <View style={styles.containerLogo}>
@@ -18,6 +20,11 @@ const Footer = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>About Us</Text>
       </TouchableOpacity>
+      <View>
+        <Text style={styles.copyright}>
+          © {year} Company, Inc. All rights reserved.
+        </Text>
+      </View>
     </View>
   );
 };
@@ -25,7 +32,7 @@ const Footer = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
     paddingVertical: 10,
@@ -35,12 +42,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   button: {
-    paddingHorizontal: 20,
+    padding: 20,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "open-bold",
     color: "#333",
+  },
+  copyright: {
+    fontFamily: "shinko-font",
   },
 });
 

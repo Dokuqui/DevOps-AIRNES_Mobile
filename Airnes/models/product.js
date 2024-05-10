@@ -8,7 +8,8 @@ class Product {
     image,
     description,
     isAvailable,
-    isFeatured
+    isFeatured,
+    colors
   ) {
     this.id = id;
     this.categoryIds = categoryIds;
@@ -19,6 +20,7 @@ class Product {
     this.description = description;
     this.isAvailable = isAvailable;
     this.isFeatured = isFeatured;
+    this.colors = colors;
   }
 }
 

@@ -23,15 +23,8 @@ function CategoryPageScreen({ navigation }) {
       keyExtractor={(item) => item.id}
       renderItem={renderCategoryItem}
       numColumns={2}
-      style={styles.rootContainer}
     />
   );
 }
 
 export default CategoryPageScreen;
-
-const styles = StyleSheet.create({
-  rootContainer: {
-    backgroundColor: GlobalStyles.colors.primary700
-  }
-})

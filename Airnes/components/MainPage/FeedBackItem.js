@@ -73,12 +73,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   userName: {
-    fontWeight: "bold",
+    fontFamily: "open-bold",
     fontSize: 18,
     marginBottom: 2,
   },
   feedbackText: {
-    fontSize: 16,
+    fontSize: 12,
+    fontFamily: "shinko-font",
   },
   starFeedback: {
     flexDirection: "row",

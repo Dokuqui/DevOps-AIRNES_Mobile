@@ -26,7 +26,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Comfortable and stylish sofa for your living room.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p2",
@@ -37,7 +38,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Elegant dining table set for your dining area.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p3",
@@ -48,7 +50,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Powerful smartphone with advanced features.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p4",
@@ -59,7 +62,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "High-performance laptop for work and entertainment.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p5",
@@ -70,7 +74,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Casual and comfortable t-shirt for everyday wear.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p6",
@@ -81,7 +86,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Classic denim jeans for a timeless look.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p7",
@@ -92,7 +98,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Energy-efficient refrigerator with ample storage space.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p8",
@@ -103,7 +110,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Engaging novel that captivates readers from start to finish.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p9",
@@ -114,7 +122,8 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Complete skincare set for a radiant and healthy complexion.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
   new Product(
     "p10",
@@ -125,6 +134,7 @@ export const PRODUCTS = [
     require("../assets/carrousel/sofa.jpeg"),
     "Premium yoga mat for comfortable and slip-resistant practice.",
     true,
-    false
+    false,
+    ["red", "blue", "green"]
   ),
 ];

@@ -1,6 +1,7 @@
 import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/core";
 
 import CarrouselItem from "../components/MainPage/CarrouselItem";
 import SearchBar from "../components/MainPage/SearchBar";
@@ -15,6 +16,8 @@ import { GlobalStyles } from "../constants/style";
 function MainPageScreen() {
   const [query, setQuery] = useState("");
   const [recommendedProducts, setRecommendedProducts] = useState([]);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     setRecommendedProducts(PRODUCTS.slice(0, 5));
@@ -31,7 +34,9 @@ function MainPageScreen() {
     setQuery(query);
   }
 
-  function pressHandler() {}
+  function navigateToProductHandler(productId) {
+    navigation.navigate("Product Detail", { productId });
+  }
 
   return (
     <ScrollView>
@@ -51,7 +56,7 @@ function MainPageScreen() {
         <View style={styles.productListContainer}>
           <Recommendations
             recommendedProducts={recommendedProducts}
-            onPress={pressHandler}
+            onPress={(productId) => navigateToProductHandler(productId)}
           />
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -72,7 +77,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: GlobalStyles.colors.primary700
   },
   carouselContainer: {
     height: Dimensions.get("window").width / 2,
