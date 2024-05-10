@@ -1,9 +1,12 @@
 import { StatusBar } from "expo-status-bar";
+import { useState, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Provider } from "react-redux";
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
 
 import ProductDetailScreen from "./screens/ProductPageScreen";
 import MainPageScreen from "./screens/MainPageScreen";
@@ -18,6 +21,33 @@ const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+        await Promise.all([
+          Font.loadAsync({
+            "shinko-font": require("./assets/fonts/shinkosansregular-8oo50.otf"),
+            "open-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+          }),
+        ]);
+        await SplashScreen.hideAsync();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
     <Drawer.Navigator
       screenOptions={{

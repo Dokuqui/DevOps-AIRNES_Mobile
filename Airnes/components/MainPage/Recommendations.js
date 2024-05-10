@@ -5,7 +5,6 @@ import {
   Platform,
   Image,
   Pressable,
-  Dimensions,
 } from "react-native";
 
 import { GlobalStyles } from "../../constants/style";
@@ -24,7 +23,7 @@ const Recommendations = ({ recommendedProducts, onPress }) => {
               styles.button,
               pressed ? styles.buttonPressed : null,
             ]}
-            onPress={() => onPress(product)}
+            onPress={() => onPress(product.id)} 
           >
             <View style={styles.productBox}>
               <Image source={product.image} style={styles.image} />
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "open-bold",
     marginBottom: 8,
   },
   productContainer: {
@@ -82,7 +81,7 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "shinko-font",
     marginHorizontal: 4,
     marginVertical: 6,
     justifyContent: "center",

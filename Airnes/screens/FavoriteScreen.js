@@ -30,11 +30,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: GlobalStyles.colors.primary200,
   },
   text: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "white",
   },
 });

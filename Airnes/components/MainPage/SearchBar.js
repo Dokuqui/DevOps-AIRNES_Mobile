@@ -48,19 +48,20 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: GlobalStyles.colors.gray700,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginRight: 10,
+    backgroundColor: "white",
   },
   button: {
-    backgroundColor: GlobalStyles.colors.primary200,
+    backgroundColor: GlobalStyles.colors.accent500,
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
   },
   buttonText: {
     color: GlobalStyles.colors.textWhite,
-    fontWeight: "bold",
+    fontFamily: "open-bold",
   },
 });
