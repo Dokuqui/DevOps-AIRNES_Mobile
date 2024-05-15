@@ -16,6 +16,7 @@ import ContactPageScreen from "./screens/ContactPageScreen";
 import FavoritesScreen from "./screens/FavoriteScreen";
 import { GlobalStyles } from "./constants/style";
 import { store } from "./store/store";
+import BasketScreen from "./screens/BasketPageScreen";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -85,6 +86,15 @@ function DrawerNavigator() {
         options={{
           drawerIcon: ({ color, size }) => (
             <Ionicons name="star" color={color} size={size} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Basket"
+        component={BasketScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="bag" color={color} size={size} />
           ),
         }}
       />

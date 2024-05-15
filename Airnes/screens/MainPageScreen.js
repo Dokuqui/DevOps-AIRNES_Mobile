@@ -10,8 +10,7 @@ import Feedback from "../components/MainPage/FeedBackItem";
 import Footer from "../components/MainPage/Footer";
 import { carouselData } from "../data/carrouselData";
 import { feedbackData } from "../data/feedback";
-import { CATEGORIES, PRODUCTS } from "../data/dummy-data";
-import { GlobalStyles } from "../constants/style";
+import { PRODUCTS } from "../data/dummy-data";
 
 function MainPageScreen() {
   const [query, setQuery] = useState("");

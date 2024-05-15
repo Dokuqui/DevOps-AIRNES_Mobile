@@ -27,7 +27,7 @@ const Recommendations = ({ recommendedProducts, onPress }) => {
           >
             <View style={styles.productBox}>
               <Image source={product.image} style={styles.image} />
-              <Text style={styles.productName}>{product.name}  -  {product.price}$</Text>
+              <Text style={styles.productName}>{product.name}  -  {product.price}€</Text>
             </View>
           </Pressable>
         ))}

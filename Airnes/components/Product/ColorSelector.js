@@ -1,7 +1,10 @@
-// ColorSelector component
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-function ColorSelector({ colors, onSelectColor }) {
+function ColorSelector({ colors, selectedColor, onSelectColor }) {
+  const handleColorSelection = (color) => {
+    onSelectColor(color);
+  };
+
   return (
     <View style={styles.rootContainer}>
       <Text style={styles.label}>Color:</Text>
@@ -9,7 +12,7 @@ function ColorSelector({ colors, onSelectColor }) {
         <TouchableOpacity
           key={index}
           style={[styles.colorCircle, { backgroundColor: color }]}
-          onPress={() => onSelectColor(color)}
+          onPress={() => handleColorSelection(color)}
         />
       ))}
     </View>

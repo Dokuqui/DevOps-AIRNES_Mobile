@@ -1,26 +1,17 @@
-import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import CustomButton from "../Buttons/QuantityButton"
+import QuantityButton from "../Buttons/QuantityButton"
 
-function QuantitySelect() {
-  const [quantity, setQuantity] = useState(1);
-
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+function QuantitySelect({ selectedQuantity, onSelectQuantity }) {
+  const handleQuantityChange = (quantity) => {
+    onSelectQuantity(quantity);
   };
 
   return (
     <View style={styles.quantityContainer}>
       <Text style={styles.label}>Quantity:</Text>
-      <CustomButton title="-" onPress={decrementQuantity} />
-      <Text style={styles.quantity}>{quantity}</Text>
-      <CustomButton title="+" onPress={incrementQuantity} />
+      <QuantityButton title="-" onPress={() => handleQuantityChange(selectedQuantity - 1)} />
+      <Text style={styles.quantity}>{selectedQuantity}</Text>
+      <QuantityButton title="+" onPress={() => handleQuantityChange(selectedQuantity + 1)} />
     </View>
   );
 }

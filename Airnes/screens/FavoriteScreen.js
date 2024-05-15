@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 
 import ProductList from "../components/ProductList/ProductList";
 import { PRODUCTS } from "../data/dummy-data";
-import { GlobalStyles } from "../constants/style";
 
 function FavoritesScreen() {
   const favoriteProductIds = useSelector((state) => state.favoriteProduct.ids);
@@ -33,6 +32,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "open-bold",
   },
 });
