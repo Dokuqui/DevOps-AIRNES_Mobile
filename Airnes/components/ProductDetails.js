@@ -5,7 +5,7 @@ function ProductDetails({ price, brand, style, textStyle, boxStyle }) {
   return (
     <View style={[styles.detailsContainer, boxStyle]}>
       <View style={[styles.details, style]}>
-        <Text style={[styles.detailItem, textStyle]}>{price} $</Text>
+        <Text style={[styles.detailItem, textStyle]}>{price} €</Text>
         <Text style={[styles.detailItem, textStyle]}>
           {brand.toUpperCase()}
         </Text>
@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     borderColor: GlobalStyles.colors.primary100,
     borderWidth: 1,
     padding: 8,
-    width: "80%",
   },
   details: {
     flexDirection: "row",
@@ -34,5 +33,6 @@ const styles = StyleSheet.create({
   detailItem: {
     marginHorizontal: 4,
     fontSize: 12,
+    fontFamily: "shinko-font",
   },
 });

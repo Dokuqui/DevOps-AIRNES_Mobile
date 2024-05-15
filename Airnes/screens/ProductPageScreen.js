@@ -11,11 +11,13 @@ import AvailabilityMessage from "../components/Product/Available";
 import ColorSelector from "../components/Product/ColorSelector";
 import QuantitySelect from "../components/Product/Quantity";
 import AddToBasketButton from "../components/Buttons/AddToBasket";
+import Footer from "../components/MainPage/Footer";
 import { addFavorite, removeFavorite } from "../store/favorites";
-import { GlobalStyles } from "../constants/style";
+import { addToBasket } from "../store/basket";
 
 function ProductDetailScreen({ route, navigation }) {
   const favoriteProductIds = useSelector((state) => state.favoriteProduct.ids);
+  const basketProductIds = useSelector((state) => state.basketProduct.ids);
   const dispatch = useDispatch();
 
   const productId = route.params.productId;
@@ -23,6 +25,7 @@ function ProductDetailScreen({ route, navigation }) {
   const selectedProduct = PRODUCTS.find((product) => product.id === productId);
 
   const productIsFavorite = favoriteProductIds.includes(productId);
+  const productIsToBasket = basketProductIds.includes(productId);
 
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
@@ -49,8 +52,18 @@ function ProductDetailScreen({ route, navigation }) {
     });
   }, [navigation, changeFavoriteStatusHandler]);
 
+  function handleQuantitySelection(quantity) {
+    setSelectedQuantity(quantity);
+  }
+
   function handleColorSelection(color) {
     setSelectedColor(color);
+  }
+
+  function changeBasketStatusHandler(product) {
+    if (!productIsToBasket) {
+      dispatch(addToBasket(product));
+    }
   }
 
   function handleAddToBasket() {
@@ -59,7 +72,7 @@ function ProductDetailScreen({ route, navigation }) {
       color: selectedColor,
       quantity: selectedQuantity,
     };
-    console.log("Product added to basket:", productToAddToBasket);
+    changeBasketStatusHandler(productToAddToBasket);
   }
 
   return (
@@ -83,7 +96,7 @@ function ProductDetailScreen({ route, navigation }) {
       <View style={styles.selectors}>
         <QuantitySelect
           selectedQuantity={selectedQuantity}
-          onSelectQuantity={setSelectedQuantity}
+          onSelectQuantity={handleQuantitySelection}
         />
         {selectedProduct.colors && (
           <ColorSelector
@@ -96,6 +109,7 @@ function ProductDetailScreen({ route, navigation }) {
         <View style={styles.addBasket}>
           <AddToBasketButton onPress={handleAddToBasket} />
         </View>
+        <Footer />
       </View>
     </ScrollView>
   );
@@ -118,7 +132,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   detailText: {
-    fontFamily: "shinko-font",
     fontSize: 18,
     marginHorizontal: "auto",
   },
