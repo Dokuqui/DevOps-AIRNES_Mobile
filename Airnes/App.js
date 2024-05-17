@@ -1,9 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { useState, useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { useState, useEffect, useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Provider } from "react-redux";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
@@ -18,6 +20,9 @@ import { GlobalStyles } from "./constants/style";
 import { store } from "./store/store";
 import BasketScreen from "./screens/BasketPageScreen";
 import CheckoutPageScreen from "./screens/CheckoutPageScreen";
+import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/RegisterScreen";
+import AuthContextProvider, { AuthContext } from "./store/auth-context";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -47,7 +52,11 @@ function DrawerNavigator() {
   }, []);
 
   if (!appIsReady) {
-    return null;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (
@@ -109,44 +118,101 @@ function DrawerNavigator() {
           ),
         }}
       />
+      <Drawer.Screen
+        name="Auth"
+        component={AuthStack}
+        options={{
+          title: "Authentication",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="person" color={color} size={size} />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
+}
+
+function AuthStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary100 },
+        headerTintColor: GlobalStyles.colors.textWhite,
+      }}
+    >
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignupScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function Navigation() {
+  const authCtx = useContext(AuthContext);
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Drawer"
+          component={DrawerNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Product Overview"
+          component={ProductOverviewScreen}
+        />
+        <Stack.Screen
+          name="Product Detail"
+          component={ProductDetailScreen}
+          options={{ title: "Product Screen" }}
+        />
+        <Stack.Screen name="Checkout Payment" component={CheckoutPageScreen} />
+        {/* {authCtx.isAuthenticated && (
+          <Stack.Screen name="UserPage" component={UserPageScreen} />
+        )} */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function Root() {
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    async function fetchToken() {
+      const storedToken = await AsyncStorage.getItem("token");
+
+      if (storedToken) {
+        authCtx.authenticate(storedToken);
+      }
+
+      setIsTryingLogin(false);
+    }
+
+    fetchToken();
+  }, []);
+
+  if (isTryingLogin) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  return <Navigation />;
 }
 
 export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <Provider store={store}>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Drawer"
-            screenOptions={{
-              headerStyle: { backgroundColor: GlobalStyles.colors.primary800 },
-              headerTintColor: GlobalStyles.colors.textWhite,
-            }}
-          >
-            <Stack.Screen
-              name="Drawer"
-              component={DrawerNavigator}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Product Overview"
-              component={ProductOverviewScreen}
-            />
-            <Stack.Screen
-              name="Product Detail"
-              component={ProductDetailScreen}
-              options={{ title: "Product Screen" }}
-            />
-            <Stack.Screen
-              name="Checkout Payment"
-              component={CheckoutPageScreen}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
+      <AuthContextProvider>
+        <Provider store={store}>
+          <Root />
+        </Provider>
+      </AuthContextProvider>
     </>
   );
 }
