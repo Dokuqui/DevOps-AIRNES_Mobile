@@ -17,6 +17,7 @@ import FavoritesScreen from "./screens/FavoriteScreen";
 import { GlobalStyles } from "./constants/style";
 import { store } from "./store/store";
 import BasketScreen from "./screens/BasketPageScreen";
+import CheckoutPageScreen from "./screens/CheckoutPageScreen";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -138,6 +139,10 @@ export default function App() {
               name="Product Detail"
               component={ProductDetailScreen}
               options={{ title: "Product Screen" }}
+            />
+            <Stack.Screen
+              name="Checkout Payment"
+              component={CheckoutPageScreen}
             />
           </Stack.Navigator>
         </NavigationContainer>

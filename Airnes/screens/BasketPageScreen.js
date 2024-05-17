@@ -6,9 +6,11 @@ import ProductList from "../components/ProductList/ProductList";
 import BasketButton from "../components/Buttons/BasketButton";
 import { clearBasket } from "../store/basket";
 import { GlobalStyles } from "../constants/style";
+import { useNavigation } from "@react-navigation/native";
 
 function BasketScreen() {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const basketProductIds = useSelector((state) => state.basketProduct.ids);
 
@@ -39,6 +41,10 @@ function BasketScreen() {
     );
   }
 
+  const handleOrderPress = () => {
+    navigation.navigate("Checkout Payment");
+  };
+
   return (
     <>
       <ProductList items={basketProducts} />
@@ -53,7 +59,7 @@ function BasketScreen() {
         </View>
         <View style={styles.buttonContainer}>
           <BasketButton title="Cancel" style={styles.buttonCancel} onPress={() => dispatch(clearBasket())} />
-          <BasketButton title="Order" style={styles.buttonOrder} onPress={() => console.log("Order")} />
+          <BasketButton title="Order" style={styles.buttonOrder} onPress={handleOrderPress} />
         </View>
       </View>
     </>
