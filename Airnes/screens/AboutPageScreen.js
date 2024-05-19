@@ -7,7 +7,7 @@ function AboutScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require("../assets/favicon.png")} // Adjust the path as needed
+          source={require("../assets/favicon.png")}
           style={styles.logo}
         />
         <Text style={styles.title}>About Us</Text>
@@ -53,13 +53,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontFamily: "open-bold",
   },
   content: {
     marginBottom: 20,
   },
   paragraph: {
     fontSize: 16,
+    fontFamily: "shinko-font",
     lineHeight: 24,
     marginBottom: 10,
   },

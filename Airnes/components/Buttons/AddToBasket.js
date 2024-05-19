@@ -1,4 +1,5 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { GlobalStyles } from "../../constants/style";
 
 const AddToBasketButton = ({ onPress }) => {
   return (
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   buttonText: {
-    color: "white",
+    color: GlobalStyles.colors.textWhite,
     fontSize: 14,
     fontFamily: "open-bold",
   },
