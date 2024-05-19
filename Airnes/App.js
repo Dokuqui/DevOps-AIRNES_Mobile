@@ -22,6 +22,7 @@ import BasketScreen from "./screens/BasketPageScreen";
 import CheckoutPageScreen from "./screens/CheckoutPageScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/RegisterScreen";
+import AboutScreen from "./screens/AboutPageScreen";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
 
 const Stack = createNativeStackNavigator();
@@ -151,7 +152,12 @@ function Navigation() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: { backgroundColor: GlobalStyles.colors.primary800 },
+          headerTintColor: GlobalStyles.colors.textWhite,
+        }}
+      >
         <Stack.Screen
           name="Drawer"
           component={DrawerNavigator}
@@ -165,6 +171,11 @@ function Navigation() {
           name="Product Detail"
           component={ProductDetailScreen}
           options={{ title: "Product Screen" }}
+        />
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={{ title: "About Us" }}
         />
         <Stack.Screen name="Checkout Payment" component={CheckoutPageScreen} />
         {/* {authCtx.isAuthenticated && (
