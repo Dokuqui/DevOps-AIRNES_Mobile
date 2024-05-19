@@ -1,8 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 const Footer = () => {
+  const navigation = useNavigation();
   const year = new Date().getFullYear();
+
+  const handleAboutPress = () => {
+    navigation.navigate("About");
+  };
 
   return (
     <View style={styles.container}>
@@ -17,7 +23,7 @@ const Footer = () => {
           <Ionicons name="logo-facebook" size={30} color="black" />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleAboutPress}>
         <Text style={styles.buttonText}>About Us</Text>
       </TouchableOpacity>
       <View>
