@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingVertical: 8,
+    fontFamily: "shinko-font",
     paddingHorizontal: 6,
     backgroundColor: "white",
     borderRadius: 4,
