@@ -85,5 +85,6 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginTop: 8,
+    fontFamily: "open-bold",
   },
 });

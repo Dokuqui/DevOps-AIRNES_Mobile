@@ -23,6 +23,8 @@ import CheckoutPageScreen from "./screens/CheckoutPageScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/RegisterScreen";
 import AboutScreen from "./screens/AboutPageScreen";
+import UserScreen from "./screens/UserPageScreen";
+import UpdateUserScreen from "./screens/UserUpdateScreen";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +32,7 @@ const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
   const [appIsReady, setAppIsReady] = useState(false);
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     async function prepare() {
@@ -119,16 +122,29 @@ function DrawerNavigator() {
           ),
         }}
       />
-      <Drawer.Screen
-        name="Auth"
-        component={AuthStack}
-        options={{
-          title: "Authentication",
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
-          ),
-        }}
-      />
+      {authCtx.isAuthenticated ? (
+        <Drawer.Screen
+          name="User"
+          component={UserScreen}
+          options={{
+            title: "My Cabinet",
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="person" color={color} size={size} />
+            ),
+          }}
+        />
+      ) : (
+        <Drawer.Screen
+          name="Auth"
+          component={AuthStack}
+          options={{
+            title: "Authentication",
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="person" color={color} size={size} />
+            ),
+          }}
+        />
+      )}
     </Drawer.Navigator>
   );
 }
@@ -148,7 +164,7 @@ function AuthStack() {
 }
 
 function Navigation() {
-  const authCtx = useContext(AuthContext);
+  // const authCtx = useContext(AuthContext);
 
   return (
     <NavigationContainer>
@@ -177,7 +193,15 @@ function Navigation() {
           component={AboutScreen}
           options={{ title: "About Us" }}
         />
-        <Stack.Screen name="Checkout Payment" component={CheckoutPageScreen} />
+        <Stack.Screen
+          name="User Update"
+          component={UpdateUserScreen}
+          options={{ title: "Update User Details" }}
+        />
+        <Stack.Screen 
+          name="Checkout Payment" 
+          component={CheckoutPageScreen} 
+        />
         {/* {authCtx.isAuthenticated && (
           <Stack.Screen name="UserPage" component={UserPageScreen} />
         )} */}
