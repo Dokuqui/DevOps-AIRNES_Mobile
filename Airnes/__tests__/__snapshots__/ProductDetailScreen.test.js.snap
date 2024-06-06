@@ -73,7 +73,7 @@ exports[`ProductDetailScreen renders correctly with fetched product data 1`] = `
               },
               {
                 "fontSize": 18,
-                "marginHorizontal": "auto",
+                "textAlign": "center",
               },
             ]
           }
@@ -202,8 +202,7 @@ exports[`ProductDetailScreen renders correctly with fetched product data 1`] = `
         style={
           {
             "alignItems": "center",
-            "flexDirection": "column",
-            "justifyContent": "center",
+            "marginHorizontal": 50,
             "marginVertical": 20,
           }
         }
@@ -404,8 +403,7 @@ exports[`ProductDetailScreen renders correctly with fetched product data 1`] = `
                       "fontFamily": "shinko-font",
                       "height": 50,
                       "justifyContent": "center",
-                      "marginRight": 5,
-                      "width": 200,
+                      "textAlign": "center",
                     },
                     {
                       "color": "#c7c7cd",
@@ -413,7 +411,7 @@ exports[`ProductDetailScreen renders correctly with fetched product data 1`] = `
                   ]
                 }
                 testID="text_input"
-                value="Select material"
+                value="Select material : "
               />
             </View>
           </View>
@@ -458,9 +456,8 @@ exports[`ProductDetailScreen renders correctly with fetched product data 1`] = `
           {
             "alignItems": "center",
             "justifyContent": "center",
-            "marginHorizontal": "auto",
             "marginVertical": 20,
-            "width": 300,
+            "width": "100%",
           }
         }
       >
