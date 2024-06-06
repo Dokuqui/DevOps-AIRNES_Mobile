@@ -13,6 +13,7 @@ function ColorSelector({ colors, onSelectColor }) {
           key={index}
           style={[styles.colorCircle, { backgroundColor: color }]}
           onPress={() => handleColorSelection(color)}
+          testID={`color-selector-${color}`}
         />
       ))}
     </View>

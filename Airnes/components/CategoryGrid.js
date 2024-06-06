@@ -2,7 +2,7 @@ import { Pressable, View, Text, StyleSheet, Platform } from "react-native";
 
 import { GlobalStyles } from "../constants/style";
 
-function CategoryGridTile({ title, onPress }) {
+function CategoryGridTile({ title, onPress, testID }) {
 
   return (
     <View style={styles.gridItem}>
@@ -13,6 +13,7 @@ function CategoryGridTile({ title, onPress }) {
           pressed ? styles.buttonPressed : null,
         ]}
         onPress={onPress}
+        testID={testID}
       >
         <View style={styles.innerContainer}>
           <Text style={styles.title}>{title}</Text>

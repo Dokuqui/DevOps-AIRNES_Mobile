@@ -1,9 +1,9 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { GlobalStyles } from "../../constants/style";
 
-const AddToBasketButton = ({ onPress }) => {
+const AddToBasketButton = ({ onPress, testID }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
+    <TouchableOpacity onPress={onPress} testID={testID} style={styles.container}>
       <Text style={styles.buttonText}>Add to Basket</Text>
     </TouchableOpacity>
   );

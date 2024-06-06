@@ -1,11 +1,10 @@
-import { useEffect, useState, useLayoutEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Image, Text, View, StyleSheet, ScrollView, Alert } from "react-native";
 import { APIRequest, API_URL } from "../components/util/helper";
 import ProductDetails from "../components/ProductDetails";
 import Subtitle from "../components/ProductDetails/Subtitle";
 import List from "../components/ProductDetails/List";
-import IconButton from "../components/Buttons/IconButton";
 import AvailabilityMessage from "../components/Product/Available";
 import ColorSelector from "../components/Product/ColorSelector";
 import QuantitySelect from "../components/Product/Quantity";
