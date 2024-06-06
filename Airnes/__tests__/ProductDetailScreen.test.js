@@ -1,9 +1,8 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import { render, waitFor } from "@testing-library/react-native";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import ProductDetailScreen from "../screens/ProductPageScreen";
-import { addBasketItem } from "../store/basket";
 
 jest.mock("@expo/vector-icons", () => ({
   Ionicons: "Ionicons",
