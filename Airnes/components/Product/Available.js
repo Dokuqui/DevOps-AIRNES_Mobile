@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "../../constants/style";
 
-function AvailabilityMessage({ available }) {
+function AvailabilityMessage({ stock }) {
   return (
     <View style={styles.rootContainer}>
       <Text style={styles.label}>
@@ -9,10 +9,10 @@ function AvailabilityMessage({ available }) {
         <Text
           style={[
             styles.availableText,
-            available ? styles.availableColor : styles.outOfStockColor,
+            stock > 0 ? styles.availableColor : styles.outOfStockColor,
           ]}
         >
-          {available ? "In Stock" : "Out of Stock"}
+          {stock > 0 ? "In Stock" : "Out of Stock"}
         </Text>
       </Text>
     </View>

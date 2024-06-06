@@ -1,27 +1,72 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert
 } from "react-native";
 import { GlobalStyles } from "../constants/style";
+import { getUserInfo } from "../components/util/auth";
+import { APIRequest } from "../components/util/helper";
+import LoadingOverlay from "../components/UI/loading-overlay";
 
 function UpdateUserScreen() {
-  const [name, setName] = useState("");
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [creditCard, setCreditCard] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
-  function handleUpdate() {
-    console.log("Updated user info:", {
-      name,
-      email,
-      password,
-      address,
-      creditCard,
-    });
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userInfo = await getUserInfo();
+        setUser(userInfo);
+        setFirstName(userInfo.FirstName);
+        setLastName(userInfo.LastName);
+        setEmail(userInfo.Mail);
+      } catch (error) {
+        Alert.alert("Error", "Failed to load user information.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleUpdate = async () => {
+    const updatedData = {};
+    if (firstName !== user.FirstName) updatedData.Firstname = firstName;
+    if (lastName !== user.LastName) updatedData.Lastname = lastName;
+    if (email !== user.Mail) updatedData.Mail = email;
+    if (newPassword) updatedData.Password = newPassword;
+    if (oldPassword) updatedData.CurrentPassword = oldPassword;
+
+    if (Object.keys(updatedData).length === 0) {
+      Alert.alert("No changes to update");
+      return;
+    }
+
+    try {
+      const response = await APIRequest("put", "Users", updatedData);
+      if (response.success) {
+        Alert.alert("User info updated");
+        setUser({ ...user, ...updatedData });
+      } else {
+        Alert.alert("Update failed", response.message);
+      }
+    } catch (error) {
+      Alert.alert("Update error", error.message);
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingOverlay message="Loading information..." />
   }
 
   return (
@@ -29,27 +74,38 @@ function UpdateUserScreen() {
       <Text style={styles.header}>Update Personal Information</Text>
       <TextInput
         style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+        required={false}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={lastName}
+        onChangeText={setLastName}
+        required={false}
       />
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        required={false}
       />
       <TextInput
         style={styles.input}
-        placeholder="Address"
-        value={address}
-        onChangeText={setAddress}
+        placeholder="Current Password"
+        value={oldPassword}
+        onChangeText={setOldPassword}
+        required={false}
       />
       <TextInput
         style={styles.input}
-        placeholder="Credit Card"
-        value={creditCard}
-        onChangeText={setCreditCard}
+        placeholder="New Password"
+        value={newPassword}
+        onChangeText={setNewPassword}
+        required={false}
       />
       <TouchableOpacity style={styles.customButton} onPress={handleUpdate}>
         <Text style={styles.buttonText}>Update</Text>

@@ -5,7 +5,4 @@ export const carouselData = [
   {
     image: require("../assets/carrousel/sofa.jpeg"),
   },
-  {
-    image: require("../assets/carrousel/sofa.jpeg"),
-  },
 ];

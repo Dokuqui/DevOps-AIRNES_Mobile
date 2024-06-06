@@ -10,7 +10,7 @@ import {
 import { GlobalStyles } from "../../constants/style";
 
 
-const Recommendations = ({ recommendedProducts, onPress }) => {
+const Recommendations = ({ recommendedProducts, onPress, image }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recommended Products:</Text>
@@ -26,8 +26,8 @@ const Recommendations = ({ recommendedProducts, onPress }) => {
             onPress={() => onPress(product.id)} 
           >
             <View style={styles.productBox}>
-              <Image source={product.image} style={styles.image} />
-              <Text style={styles.productName}>{product.name}  -  {product.price}€</Text>
+              <Image source={{ uri: product.image }} style={styles.image} />
+              <Text style={styles.productName}>{product.title}  -  {product.price}€</Text>
             </View>
           </Pressable>
         ))}

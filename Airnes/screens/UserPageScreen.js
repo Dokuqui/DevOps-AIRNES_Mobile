@@ -1,31 +1,79 @@
-import { useContext, useLayoutEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useCallback,
+} from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../store/auth-context";
 import { Ionicons } from "@expo/vector-icons";
 import { GlobalStyles } from "../constants/style";
+import { getUserInfo } from "../components/util/auth";
+import { APIRequest } from "../components/util/helper";
+import LoadingOverlay from "../components/UI/loading-overlay";
 
 function UserScreen() {
   const navigation = useNavigation();
   const authCtx = useContext(AuthContext);
+  const [user, setUser] = useState(null);
+  const [orderHistory, setOrderHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    address: "123 Main St, Springfield, USA",
-    creditCard: "1234567812345678",
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUserData = async () => {
+        const userInfo = await getUserInfo();
+        setUser(userInfo);
+        setIsLoading(false);
+      };
+
+      fetchUserData();
+    }, [])
+  );
+
+  const fetchOrderHistory = async () => {
+    let result = await APIRequest("get", "Orders");
+    let newOrderHistory = [];
+
+    for (let i = 0; i < result.data.length; i++) {
+      let order = result.data[i];
+      let products = await APIRequest(
+        "get",
+        `ProductOrder?OrderId=${order.OrderId}`
+      );
+      let price = products.return.reduce(
+        (acc, product) => acc + product.Product.Price * product.Quantity,
+        0
+      );
+
+      newOrderHistory.push({
+        id: order.OrderId,
+        date: order.OrderDate,
+        amount: `$${price.toFixed(2)}`,
+        quantity: products.return.reduce(
+          (acc, product) => acc + product.Quantity,
+          0
+        ),
+      });
+    }
+
+    setOrderHistory(newOrderHistory.reverse());
   };
 
-  const orderHistory = [
-    { id: "1", date: "2024-01-15", amount: "$199.99", product: "sofa", quantity: "2" },
-    { id: "2", date: "2024-02-20", amount: "$399.99", product: "sofa", quantity: "2"  },
-    { id: "3", date: "2024-01-15", amount: "$199.99", product: "sofa", quantity: "2"  },
-    { id: "4", date: "2024-02-20", amount: "$399.99", product: "sofa", quantity: "2"  },
-    { id: "5", date: "2024-01-15", amount: "$199.99", product: "sofa", quantity: "2"  },
-    { id: "6", date: "2024-02-20", amount: "$399.99", product: "sofa", quantity: "2"  },
-    { id: "7", date: "2024-01-15", amount: "$199.99", product: "sofa", quantity: "2"  },
-    { id: "8", date: "2024-02-20", amount: "$399.99", product: "sofa", quantity: "2"  },
-  ];
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      fetchOrderHistory().then(() => setIsLoading(false));
+    }, [])
+  );
 
   function navigateToUpdateScreen() {
     navigation.navigate("User Update");
@@ -34,10 +82,6 @@ function UserScreen() {
   function logoutHandler() {
     authCtx.logout();
     navigation.navigate("Home");
-  }
-
-  function maskCreditCard(cardNumber) {
-    return cardNumber.slice(0, -4).replace(/./g, '*') + cardNumber.slice(-4);
   }
 
   useLayoutEffect(() => {
@@ -54,17 +98,19 @@ function UserScreen() {
     });
   }, [navigation]);
 
+  if (isLoading) {
+    return <LoadingOverlay message="Loading information..." />;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>User Information</Text>
       <Text style={styles.textTitle}>Name:</Text>
-      <Text style={styles.text}>{user.name}</Text>
+      <Text style={styles.text}>
+        {user?.FirstName} {user?.LastName}
+      </Text>
       <Text style={styles.textTitle}>Email:</Text>
-      <Text style={styles.text}>{user.email}</Text>
-      <Text style={styles.textTitle}>Address:</Text>
-      <Text style={styles.text}>{user.address}</Text>
-      <Text style={styles.textTitle}>Credit Card:</Text>
-      <Text style={styles.text}>{maskCreditCard(user.creditCard)}</Text>
+      <Text style={styles.text}>{user?.Mail}</Text>
 
       <Text style={styles.header}>Order History</Text>
       <FlatList
@@ -74,7 +120,6 @@ function UserScreen() {
           <View style={styles.orderItem}>
             <Text style={styles.text}>Date: {item.date}</Text>
             <Text style={styles.text}>Amount: {item.amount}</Text>
-            <Text style={styles.text}>Details: {item.product}</Text>
             <Text style={styles.text}>Quantity: {item.quantity}</Text>
           </View>
         )}

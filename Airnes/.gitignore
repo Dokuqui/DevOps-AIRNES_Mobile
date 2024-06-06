@@ -32,3 +32,9 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# intell
+.idea/
+
+# vs code
+.vscode/

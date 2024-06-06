@@ -6,10 +6,13 @@ import FlatButton from "../Buttons/FlatButton";
 import AuthForm from "./auth-form";
 import { GlobalStyles } from "../../constants/style";
 
+
 function AuthContent({ isLogin, onAuthenticate }) {
   const navigation = useNavigation();
 
   const [credentialsInvalid, setCredentialsInvalid] = useState({
+    firstName: false,
+    lastName: false,
     email: false,
     password: false,
     confirmEmail: false,
@@ -25,11 +28,15 @@ function AuthContent({ isLogin, onAuthenticate }) {
   }
 
   function submitHandler(credentials) {
-    let { email, confirmEmail, password, confirmPassword } = credentials;
+    let { firstName, lastName, email, confirmEmail, password, confirmPassword } = credentials;
 
+    firstName = firstName.trim();
+    lastName = lastName.trim();
     email = email.trim();
     password = password.trim();
 
+    const firstNameIsValid = firstName.length > 0;
+    const lastNameIsValid = lastName.length > 0;
     const emailIsValid = email.includes("@");
     const passwordIsValid = password.length > 6;
     const emailsAreEqual = email === confirmEmail;
@@ -38,10 +45,12 @@ function AuthContent({ isLogin, onAuthenticate }) {
     if (
       !emailIsValid ||
       !passwordIsValid ||
-      (!isLogin && (!emailsAreEqual || !passwordsAreEqual))
+      (!isLogin && (!firstNameIsValid || !lastNameIsValid || !emailsAreEqual || !passwordsAreEqual))
     ) {
       Alert.alert("Invalid input", "Please check your entered credentials.");
       setCredentialsInvalid({
+        firstName: !firstNameIsValid,
+        lastName: !lastNameIsValid,
         email: !emailIsValid,
         confirmEmail: !emailIsValid || !emailsAreEqual,
         password: !passwordIsValid,
@@ -49,7 +58,8 @@ function AuthContent({ isLogin, onAuthenticate }) {
       });
       return;
     }
-    onAuthenticate({ email, password });
+    console.log("Passing to onAuthenticate:", { firstName, lastName, email, password });
+    onAuthenticate({ firstName, lastName, email, password });
   }
 
   return (

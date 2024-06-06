@@ -15,7 +15,6 @@ import MainPageScreen from "./screens/MainPageScreen";
 import CategoryPageScreen from "./screens/CategoryPageScreen";
 import ProductOverviewScreen from "./screens/ProductOverview";
 import ContactPageScreen from "./screens/ContactPageScreen";
-import FavoritesScreen from "./screens/FavoriteScreen";
 import { GlobalStyles } from "./constants/style";
 import { store } from "./store/store";
 import BasketScreen from "./screens/BasketPageScreen";
@@ -26,6 +25,8 @@ import AboutScreen from "./screens/AboutPageScreen";
 import UserScreen from "./screens/UserPageScreen";
 import UpdateUserScreen from "./screens/UserUpdateScreen";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
+import { StripeProvider } from "@stripe/stripe-react-native";
+import StripeCheckoutScreen from "./screens/StripeCheckout";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -95,15 +96,6 @@ function DrawerNavigator() {
         }}
       />
       <Drawer.Screen
-        name="Favorites"
-        component={FavoritesScreen}
-        options={{
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="star" color={color} size={size} />
-          ),
-        }}
-      />
-      <Drawer.Screen
         name="Basket"
         component={BasketScreen}
         options={{
@@ -164,7 +156,6 @@ function AuthStack() {
 }
 
 function Navigation() {
-  // const authCtx = useContext(AuthContext);
 
   return (
     <NavigationContainer>
@@ -198,13 +189,8 @@ function Navigation() {
           component={UpdateUserScreen}
           options={{ title: "Update User Details" }}
         />
-        <Stack.Screen 
-          name="Checkout Payment" 
-          component={CheckoutPageScreen} 
-        />
-        {/* {authCtx.isAuthenticated && (
-          <Stack.Screen name="UserPage" component={UserPageScreen} />
-        )} */}
+        <Stack.Screen name="Checkout Payment" component={CheckoutPageScreen} />
+        <Stack.Screen name="StripeCheckout" component={StripeCheckoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -243,11 +229,13 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <AuthContextProvider>
-        <Provider store={store}>
-          <Root />
-        </Provider>
-      </AuthContextProvider>
+      <StripeProvider publishableKey="pk_test_51PGFLzBeMEfwR1Dpa38IhbXDUYkG7gw62u9JdcwnN3KUUYeCjyhlBVQtiLm5SbIKSwyMj36mJSujKJAjC4PMkbMO00qn5R5Eil">
+        <AuthContextProvider>
+          <Provider store={store}>
+            <Root />
+          </Provider>
+        </AuthContextProvider>
+      </StripeProvider>
     </>
   );
 }

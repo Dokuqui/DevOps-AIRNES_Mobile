@@ -1,53 +1,81 @@
-// import axios from "axios";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "./helper";
 
-// // const googleApi = process.env.EXPO_PUBLIC_API_KEY_GOOGLE;
 
-
-// async function authenticate(mode, email, password) {
-//   // const url = `https://identitytoolkit.googleapis.com/v1/accounts:${mode}?key=${googleApi}`;
-
-//   // const response = await axios.post(url, {
-//   //   email: email,
-//   //   password: password,
-//   //   returnSecureToken: true,
-//   // });
-
-//   // const token = response.data.idToken;
-
-//   // return token;
-// }
-
-// export function createUser(email, password) {
-//   return authenticate("signUp", email, password);
-// }
-
-// export function login(email, password) {
-//   return authenticate("signInWithPassword", email, password);
-// }
-
-const users = {}; // In-memory store for users
-
-async function authenticate(mode, email, password) {
+async function authenticate(mode, email, password, firstName, lastName) {
   if (mode === "signUp") {
-    if (users[email]) {
-      throw new Error("User already exists!");
+    try {
+      let response = await axios.post(`${API_URL}/Users`, {
+        Mail: email,
+        Password: password,
+        Firstname: firstName,
+        Lastname: lastName,
+      });
+
+      if (response.data.success) {
+        let token = response.data.return.Token;
+        await AsyncStorage.setItem("Token", token);
+        return token;
+      } else {
+        throw new Error(response.data.return || "Registration failed");
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.return || "Registration failed");
     }
-    users[email] = { email, password };
-    return "dummy-signup-token"; // Simulated token for signup
-  } else if (mode === "signInWithPassword") {
-    if (!users[email] || users[email].password !== password) {
-      throw new Error("Invalid email or password!");
+  } else if (mode === "login") {
+    try {
+      let response = await axios.post(`${API_URL}/Users/login`, {
+        Mail: email,
+        Password: password,
+      });
+
+      if (response.data.success) {
+        let token = response.data.return.Token;
+        await AsyncStorage.setItem("Token", token);
+        return token;
+      } else {
+        throw new Error(response.data.return || "Login failed");
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.return || "Login failed");
     }
-    return "dummy-login-token"; // Simulated token for login
   } else {
     throw new Error("Invalid authentication mode!");
   }
 }
 
-export function createUser(email, password) {
-  return authenticate("signUp", email, password);
+export function createUser(email, password, firstName, lastName) {
+  return authenticate("signUp", email, password, firstName, lastName);
 }
 
 export function login(email, password) {
-  return authenticate("signInWithPassword", email, password);
+  return authenticate("login", email, password);
 }
+
+const getUserInfo = async () => {
+  try {
+      const token = await AsyncStorage.getItem("Token");
+      if (!token) {
+          return null;
+      }
+
+      const response = await axios.get(`${API_URL}/Users/me`, {
+          headers: {
+              authorization: token,
+          },
+      });
+
+      if (!response.data.success) {
+          return null;
+      }
+
+      response.data.return.FirstName = response.data.return.FirstName.charAt(0).toUpperCase() + response.data.return.FirstName.slice(1).toLowerCase();
+      response.data.return.LastName = response.data.return.LastName.charAt(0).toUpperCase() + response.data.return.LastName.slice(1).toLowerCase();
+      return response.data.return;
+  } catch (error) {
+      return null;
+  }
+}
+
+export { getUserInfo };

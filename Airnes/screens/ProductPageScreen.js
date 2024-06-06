@@ -1,8 +1,7 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Image, Text, View, StyleSheet, ScrollView } from "react-native";
-
-import { PRODUCTS } from "../data/dummy-data";
+import { Image, Text, View, StyleSheet, ScrollView, Alert } from "react-native";
+import { APIRequest, API_URL } from "../components/util/helper";
 import ProductDetails from "../components/ProductDetails";
 import Subtitle from "../components/ProductDetails/Subtitle";
 import List from "../components/ProductDetails/List";
@@ -12,45 +11,66 @@ import ColorSelector from "../components/Product/ColorSelector";
 import QuantitySelect from "../components/Product/Quantity";
 import AddToBasketButton from "../components/Buttons/AddToBasket";
 import Footer from "../components/MainPage/Footer";
-import { addFavorite, removeFavorite } from "../store/favorites";
-import { addToBasket } from "../store/basket";
+import { addBasketItem } from "../store/basket";
+import { unwrapResult } from "@reduxjs/toolkit";
+import LoadingOverlay from "../components/UI/loading-overlay";
 
 function ProductDetailScreen({ route, navigation }) {
-  const favoriteProductIds = useSelector((state) => state.favoriteProduct.ids);
-  const basketProductIds = useSelector((state) => state.basketProduct.ids);
   const dispatch = useDispatch();
 
   const productId = route.params.productId;
 
-  const selectedProduct = PRODUCTS.find((product) => product.id === productId);
 
-  const productIsFavorite = favoriteProductIds.includes(productId);
-  const productIsToBasket = basketProductIds.includes(productId);
-
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
-  function changeFavoriteStatusHandler() {
-    if (productIsFavorite) {
-      dispatch(removeFavorite({ id: productId }));
-    } else {
-      dispatch(addFavorite({ id: productId }));
-    }
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const result = await APIRequest("get", `Products?ProductId=${productId}`);
+
+        if (!result.success || !result.return) {
+          console.error("Error fetching product:", result.error);
+          return;
+        }
+
+        const productData = result.return;
+        const images = productData.Pictures.map(
+          (picture) => `${API_URL}/${picture.Link}`
+        );
+
+        setSelectedProduct({
+          id: productData.ProductId,
+          title: productData.Name,
+          availability: productData.Stock > 0,
+          description: productData.Description,
+          price: productData.Price,
+          colors: ["red", "blue", "green"],
+          images: images,
+        });
+
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProductData();
+  }, [productId]);
+
+  if (isLoading) {
+    return <LoadingOverlay message="Loading information..." />
   }
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => {
-        return (
-          <IconButton
-            icon={productIsFavorite ? "star" : "star-outline"}
-            color="white"
-            onPress={changeFavoriteStatusHandler}
-          />
-        );
-      },
-    });
-  }, [navigation, changeFavoriteStatusHandler]);
+  if (!selectedProduct) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Error loading product.</Text>
+      </View>
+    );
+  }
 
   function handleQuantitySelection(quantity) {
     setSelectedQuantity(quantity);
@@ -60,37 +80,54 @@ function ProductDetailScreen({ route, navigation }) {
     setSelectedColor(color);
   }
 
-  function changeBasketStatusHandler(product) {
-    if (!productIsToBasket) {
-      dispatch(addToBasket(product));
+  async function handleAddToBasket() {
+    if (!selectedColor) {
+      Alert.alert("Please select a color.");
+      return;
+    }
+  
+    const productToAddToBasket = {
+      ProductId: selectedProduct.id,
+      Quantity: selectedQuantity,
+      Price: selectedProduct.price
+    };
+  
+    try {
+      const resultAction = await dispatch(addBasketItem(productToAddToBasket));
+      const response = unwrapResult(resultAction);
+  
+      if (response.ProductId && response.Quantity) {
+        Alert.alert("Success", "Product added to basket.");
+      } else {
+        Alert.alert("Error", response && response.error ? response.error.toString() : "Failed to add product to basket.");
+      }      
+    } catch (error) {
+      if (error.message) {
+        Alert.alert("Error", error.message.toString());
+      } else if (typeof error === 'object') {
+        Alert.alert("Error", JSON.stringify(error));
+      } else {
+        Alert.alert("Error", error.toString());
+      }
     }
   }
-
-  function handleAddToBasket() {
-    const productToAddToBasket = {
-      ...selectedProduct,
-      color: selectedColor,
-      quantity: selectedQuantity,
-    };
-    changeBasketStatusHandler(productToAddToBasket);
-  }
+  
 
   return (
     <ScrollView style={styles.rootContainer}>
-      <Image style={styles.image} source={selectedProduct.image} />
+      <Image style={styles.image} source={{ uri: selectedProduct.images[0] }} />
       <Text style={styles.title}>{selectedProduct.name}</Text>
       <ProductDetails
         price={selectedProduct.price}
-        brand={selectedProduct.brand}
         textStyle={styles.detailText}
         boxStyle={styles.box}
       />
       <View style={styles.listOuterContainer}>
         <View style={styles.listContainer}>
-          <Subtitle>Name</Subtitle>
-          <List data={[selectedProduct.name]} />
+          <Subtitle>Title</Subtitle>
+          <List data={[selectedProduct.title]} key="title" />
           <Subtitle>Description</Subtitle>
-          <List data={[selectedProduct.description]} />
+          <List data={[selectedProduct.description]} key="description" />
         </View>
       </View>
       <View style={styles.selectors}>
@@ -105,7 +142,7 @@ function ProductDetailScreen({ route, navigation }) {
             onSelectColor={handleColorSelection}
           />
         )}
-        <AvailabilityMessage available={selectedProduct.isAvailable} />
+        <AvailabilityMessage stock={selectedProduct.availability} />
         <View style={styles.addBasket}>
           <AddToBasketButton onPress={handleAddToBasket} />
         </View>

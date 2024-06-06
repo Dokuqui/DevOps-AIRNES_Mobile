@@ -1,17 +1,21 @@
 import { View, FlatList, StyleSheet } from "react-native";
 
 import ProductItem from "./ProductItem";
+import { useRoute } from "@react-navigation/native";
 
-function ProductList({ items }) {
+function ProductList({ items, onDelete }) {
+  const route = useRoute();
+
   function renderProductItem(itemData) {
     const item = itemData.item;
     const productItemProps = {
       id: item.id,
-      name: item.name,
+      name: item.title,
       image: item.image,
       price: item.price,
-      brand: item.brand,
       description: item.description,
+      onDelete: onDelete,
+      isSwipeable: route.name === "Basket",
     };
 
     return <ProductItem {...productItemProps} />;

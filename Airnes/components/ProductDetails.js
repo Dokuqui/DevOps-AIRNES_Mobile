@@ -1,14 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
 import { GlobalStyles } from "../constants/style";
 
-function ProductDetails({ price, brand, style, textStyle, boxStyle }) {
+function ProductDetails({ price, style, textStyle, boxStyle }) {
   return (
     <View style={[styles.detailsContainer, boxStyle]}>
       <View style={[styles.details, style]}>
         <Text style={[styles.detailItem, textStyle]}>{price} €</Text>
-        <Text style={[styles.detailItem, textStyle]}>
-          {brand.toUpperCase()}
-        </Text>
       </View>
     </View>
   );
@@ -25,14 +22,15 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   details: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
     padding: 8,
   },
   detailItem: {
-    marginHorizontal: 4,
-    fontSize: 12,
+    marginVertical: 4,
+    fontSize: 18,
     fontFamily: "shinko-font",
+    justifyContent: "center",
+    alignItems: "center"
   },
 });

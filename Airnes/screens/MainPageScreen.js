@@ -1,6 +1,7 @@
-import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, View, Dimensions, ScrollView, Text } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 
 import CarrouselItem from "../components/MainPage/CarrouselItem";
@@ -10,17 +11,37 @@ import Feedback from "../components/MainPage/FeedBackItem";
 import Footer from "../components/MainPage/Footer";
 import { carouselData } from "../data/carrouselData";
 import { feedbackData } from "../data/feedback";
-import { PRODUCTS } from "../data/dummy-data";
+import { fetchProducts } from "../store/productSlice";
+import LoadingOverlay from "../components/UI/loading-overlay";
 
 function MainPageScreen() {
   const [query, setQuery] = useState("");
-  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.items);
+  const status = useSelector((state) => state.products.status);
+  const error = useSelector((state) => state.products.error);
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    setRecommendedProducts(PRODUCTS.slice(0, 5));
-  }, []);
+    if (status === "idle") {
+      dispatch(fetchProducts());
+    }
+  }, [dispatch, status]);
+
+  if (status === "loading") {
+    return <LoadingOverlay message="Loading information..." />
+  }
+
+  if (status === "failed") {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
+
+  const recommendedProducts = products.slice(0, 5);
 
   const width = Dimensions.get("window").width;
 

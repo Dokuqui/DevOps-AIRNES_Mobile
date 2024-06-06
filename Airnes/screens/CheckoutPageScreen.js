@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,217 +6,244 @@ import {
   Button,
   ScrollView,
   StyleSheet,
-  Alert
+  Alert,
 } from "react-native";
 import { GlobalStyles } from "../constants/style";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
+import { APIRequest, API_URL } from "../components/util/helper";
 
-function CheckoutPageScreen() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [address, setAddress] = useState("");
+function CheckoutPageScreen({ navigation }) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
-  const [creditCardNumber, setCreditCardNumber] = useState("");
-  const [expiryMonth, setExpiryMonth] = useState("");
-  const [expiryYear, setExpiryYear] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [cvvError, setCvvError] = useState("");
-  const [creditCardError, setCreditCardError] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [region, setRegion] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
+  const [saveAddress, setSaveAddress] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [order, setOrder] = useState({});
 
-  const navigation = useNavigation();
+  const fetchOrder = async () => {
+    try {
+      const result = await APIRequest("get", "Orders/Current");
+      setOrder(result.data);
 
-  const months = [
-    { label: "01", value: "01" },
-    { label: "02", value: "02" },
-    { label: "03", value: "03" },
-    { label: "04", value: "04" },
-    { label: "05", value: "05" },
-    { label: "06", value: "06" },
-    { label: "07", value: "07" },
-    { label: "08", value: "08" },
-    { label: "09", value: "09" },
-    { label: "10", value: "10" },
-    { label: "11", value: "11" },
-    { label: "12", value: "12" },
-  ];
+      const products_result = await APIRequest(
+        "get",
+        `ProductOrder?OrderId=${result.data.OrderId}`
+      );
+      const newProducts = products_result.return.map((product) => ({
+        id: product.Product.ProductId,
+        title: product.Product.Name,
+        price: product.Product.Price,
+        quantity: product.Quantity,
+        image: product.Product.Pictures?.[0]?.Link
+          ? `${API_URL}/${product.Product.Pictures[0].Link}`
+          : "/image/placeholder.webp",
+      }));
 
-  const years = [];
-  for (
-    let i = new Date().getFullYear();
-    i < new Date().getFullYear() + 10;
-    i++
-  ) {
-    years.push({ label: i.toString(), value: i.toString() });
-  }
-
-  const handleSubmitAlert = (navigation) => {
-    Alert.alert(
-      'Thank you for your purchase!',
-      'Your order has been successfully submitted.',
-      [
-        {
-          text: 'Ok',
-          onPress: () => navigation.navigate('Home')
-        }
-      ]
-    )
-  }  
-
-  const handleSubmit = () => {
-    console.log("Name: ", name);
-    console.log("Email: ", email);
-    console.log("Address: ", address);
-    console.log("City: ", city);
-    console.log("Postal Code: ", postalCode);
-    console.log("Country: ", country);
-    console.log("Credit Card Number: ", creditCardNumber);
-    console.log("Expiry Month: ", expiryMonth);
-    console.log("Expiry Year: ", expiryYear);
-    console.log("CVV: ", cvv);
-
-    setIsSubmitted(true);
-
-    if (!isValidEmail(email)) {
-      setEmailError("Please enter a valid email address");
-    }
-
-    if (cvv.length !== 3 || cvv.length > 3 || cvv.length < 3) {
-      setCvvError("CVV should have 3 digits");
-    }
-
-    if (creditCardNumber.length !== 16 || creditCardNumber.length > 16 || creditCardNumber.length < 16) {
-      setCreditCardError("CVV should have 16 digits");
-    }
-
-    if (!cvvError && !emailError && !creditCardError) {
-      handleSubmitAlert(navigation);
+      setProducts(newProducts);
+    } catch (error) {
+      console.error("API request error:", error);
     }
   };
 
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const fetchSavedAddresses = async () => {
+    try {
+      const result = await APIRequest("get", "Address");
+      setSavedAddresses(
+        result.return.map((address) => ({
+          id: address.AddressId,
+          firstName: address.Firstname,
+          lastName: address.Lastname,
+          address1: address.Address1,
+          address2: address.Address2,
+          city: address.City,
+          zip: address.ZipCode,
+          country: address.Country,
+          region: address.Region,
+          phone: address.Phone,
+          temporary: address.Temporary,
+        }))
+      );
+    } catch (error) {
+      console.error("Failed to fetch saved addresses:", error);
+    }
+  };
 
-  function isValidEmail(email) {
-    return emailRegex.test(email);
-  }
+  useFocusEffect(
+    useCallback(() => {
+      fetchOrder();
+      fetchSavedAddresses();
+    }, [])
+  );
+
+  const handleSubmit = async () => {
+    let addressId = selectedAddressId;
+    if (!addressId) {
+      try {
+        const result = await APIRequest("post", "Address", {
+          Firstname: firstName,
+          Lastname: lastName,
+          Address1: address1,
+          Address2: address2,
+          City: city,
+          ZipCode: postalCode,
+          Country: country,
+          Region: region,
+          Phone: phoneNumber,
+          Temporary: !saveAddress,
+        });
+        addressId = result.address.AddressId;
+      } catch (error) {
+        console.error("Failed to save address:", error);
+        return;
+      }
+    }
+  
+    try {
+      await APIRequest("post", "Orders/SetAddress", {
+        OrderId: order.OrderId,
+        AddressId: addressId
+      });
+
+      handleCheckout();
+    } catch (error) {
+      Alert.alert("Checkout error", error.message);
+    }
+  };
+  
+  const handleCheckout = async () => {
+    try {
+    const response = await APIRequest("post", "create-checkout-session");
+    const checkoutUrl = response.url;
+
+    navigation.navigate("StripeCheckout", { url: checkoutUrl, orderId: order.OrderId });
+    } catch (error) {
+      Alert.alert("Checkout error", error.message);
+    }
+  };
+  
+  const handleSavedAddressSelect = (value) => {
+    setSelectedAddressId(value);
+
+    if (value) {
+      const selectedAddress = savedAddresses.find((addr) => addr.id === value);
+      if (selectedAddress) {
+        setFirstName(selectedAddress.firstName);
+        setLastName(selectedAddress.lastName);
+        setAddress1(selectedAddress.address1);
+        setAddress2(selectedAddress.address2);
+        setCity(selectedAddress.city);
+        setPostalCode(selectedAddress.zip);
+        setCountry(selectedAddress.country);
+        setRegion(selectedAddress.region);
+        setPhoneNumber(selectedAddress.phone);
+      }
+    } else {
+      setFirstName("");
+      setLastName("");
+      setAddress1("");
+      setAddress2("");
+      setCity("");
+      setPostalCode("");
+      setCountry("");
+      setRegion("");
+      setPhoneNumber("");
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>Payment Information</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-          required={true}
+        <Text style={styles.addTitle}>Existing Address</Text>
+        <RNPickerSelect
+          onValueChange={handleSavedAddressSelect}
+          items={savedAddresses.map((address) => ({
+            label: `${address.firstName} ${address.lastName}, ${address.address1}, ${address.city}`,
+            value: address.id
+          }))}
+          placeholder={{ label: "Select a saved address", value: null }}
+          style={pickerStyles}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          required={true}
-          onChangeText={(text) => {
-            setEmail(text);
-            if (!isValidEmail(text)) {
-              setEmailError("Please enter a valid email address");
-            } else {
-              setEmailError(null);
-            }
-          }}
-        />
-        {emailError && (
-          <Text style={styles.error}>You should enter valid email!</Text>
-        )}
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={address}
-          onChangeText={setAddress}
-          required={true}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="City"
-          value={city}
-          onChangeText={setCity}
-          required={true}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Postal Code"
-          value={postalCode}
-          onChangeText={setPostalCode}
-          keyboardType="numeric"
-          required={true}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Country"
-          value={country}
-          onChangeText={setCountry}
-          required={true}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Credit Card Number"
-          value={creditCardNumber}
-          onChangeText={setCreditCardNumber}
-          keyboardType="numeric"
-          required={true}
-          minLength={16}
-          maxLength={16}
-        />
-        {creditCardError && (
-          <Text style={styles.error}>
-            Credit card number should have 16 digits
-          </Text>
-        )}
-        <View style={styles.inputContainer}>
-          <RNPickerSelect
-            style={pickerStyles}
-            placeholder={{ label: "Expiry Month", value: null }}
-            onValueChange={(value) => setExpiryMonth(value)}
-            items={months}
-            value={expiryMonth}
-            required={true}
-          />
-          <TextInput
-            style={[styles.input, { color: "black" }]}
-            value={expiryMonth}
-            editable={false}
-          />
-          <RNPickerSelect
-            style={pickerStyles}
-            placeholder={{ label: "Expiry Year", value: null }}
-            onValueChange={(value) => setExpiryYear(value)}
-            items={years}
-            value={expiryYear}
-            required={true}
-          />
-          <TextInput
-            style={[styles.input, { color: "black" }]}
-            value={expiryYear}
-            editable={false}
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="CVV"
-          value={cvv}
-          onChangeText={setCvv}
-          keyboardType="numeric"
-          maxLength={3}
-          required={true}
-        />
-        {cvvError && (
-          <Text style={styles.error}>
-            CVV should not be longer than 3 digits
-          </Text>
+        {!selectedAddressId && (
+          <>
+          <Text style={styles.addTitle}>Add New Address</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+              required={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+              required={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Address 1"
+              value={address1}
+              onChangeText={setAddress1}
+              required={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Address 2"
+              value={address2}
+              onChangeText={setAddress2}
+              required={false}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="City"
+              value={city}
+              onChangeText={setCity}
+              required={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Region"
+              value={region}
+              onChangeText={setRegion}
+              required={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Postal Code"
+              value={postalCode}
+              onChangeText={setPostalCode}
+              keyboardType="numeric"
+              required={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Country"
+              value={country}
+              onChangeText={setCountry}
+              required={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="numeric"
+              required={true}
+              minLength={10}
+              maxLength={10}
+            />
+          </>
         )}
         <Button
           title="Submit"
@@ -241,6 +268,12 @@ const styles = StyleSheet.create({
     fontFamily: "open-bold",
     textAlign: "center",
     marginBottom: 30,
+  },
+  addTitle: {
+    fontSize: 20,
+    fontFamily: "open-bold",
+    textAlign: "center",
+    marginVertical: 20,
   },
   input: {
     height: 40,

@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-function ColorSelector({ colors, selectedColor, onSelectColor }) {
+function ColorSelector({ colors, onSelectColor }) {
   const handleColorSelection = (color) => {
     onSelectColor(color);
   };

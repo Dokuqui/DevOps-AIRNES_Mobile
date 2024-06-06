@@ -5,12 +5,31 @@ import {
   Text,
   View,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import ProductDetails from "../ProductDetails";
+import {
+  Swipeable,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { GlobalStyles } from "../../constants/style";
 
-function ProductItem({ id, name, price, brand, image }) {
+function ProductItem({ id, name, price, image, onDelete, isSwipeable }) {
   const navigation = useNavigation();
+
+  const renderRightActions = () => {
+    return (
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => onDelete(id)}
+      >
+        <Ionicons name="trash" size={24} color="white" />
+        <Text style={styles.deleteButtonText}>Delete</Text>
+      </TouchableOpacity>
+    );
+  };
 
   function selectProductItemHandler() {
     navigation.navigate("Product Detail", {
@@ -19,21 +38,25 @@ function ProductItem({ id, name, price, brand, image }) {
   }
 
   return (
-    <View style={styles.productItem}>
-      <Pressable
-        android_ripple={{ color: "#ccc" }}
-        style={({ pressed }) => (pressed ? styles.buttonPressed : null)}
-        onPress={selectProductItemHandler}
-      >
-        <View style={styles.innerContainer}>
-          <View>
-            <Image source={image} style={styles.image} />
-            <Text style={styles.title}>{name}</Text>
-          </View>
-          <ProductDetails price={price} brand={brand} />
+    <GestureHandlerRootView>
+      <Swipeable renderRightActions={isSwipeable ? renderRightActions : null}>
+        <View style={styles.productItem}>
+          <Pressable
+            android_ripple={{ color: "#ccc" }}
+            style={({ pressed }) => (pressed ? styles.buttonPressed : null)}
+            onPress={selectProductItemHandler}
+          >
+            <View style={styles.innerContainer}>
+              <View>
+                <Image source={{ uri: image }} style={styles.image} />
+                <Text style={styles.title}>{name}</Text>
+              </View>
+              <ProductDetails price={price} />
+            </View>
+          </Pressable>
         </View>
-      </Pressable>
-    </View>
+      </Swipeable>
+    </GestureHandlerRootView>
   );
 }
 
@@ -68,5 +91,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     margin: 8,
+  },
+  deleteButton: {
+    backgroundColor: GlobalStyles.colors.error500,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 80,
+    borderRadius: 10,
+    marginVertical: 16,
+  },
+  deleteButtonText: {
+    color: "white",
+    fontSize: 12,
+    fontFamily: "open-bold",
   },
 });
