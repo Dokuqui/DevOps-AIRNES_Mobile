@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 import ProductList from "../components/ProductList/ProductList";
@@ -88,7 +88,6 @@ function BasketScreen() {
         `ProductOrder?OrderId=${order.OrderId}&ProductId=${productId}`
       );
       if (response.success) {
-        console.log("Product successfully deleted from order.");
         dispatch(removeProduct(productId));
       } else {
         console.error("Failed to delete product:", response.error);
@@ -110,7 +109,7 @@ function BasketScreen() {
       );
       setProducts([]);
       if (response.success) {
-        console.log("Product successfully deleted from order.");
+        Alert.alert("Success", "Product was deleted.");
       } else {
         console.error("Failed to delete product:", response.error);
       }

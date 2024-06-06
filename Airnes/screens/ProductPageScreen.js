@@ -6,7 +6,7 @@ import ProductDetails from "../components/ProductDetails";
 import Subtitle from "../components/ProductDetails/Subtitle";
 import List from "../components/ProductDetails/List";
 import AvailabilityMessage from "../components/Product/Available";
-import ColorSelector from "../components/Product/ColorSelector";
+import RNPickerSelect from "react-native-picker-select";
 import QuantitySelect from "../components/Product/Quantity";
 import AddToBasketButton from "../components/Buttons/AddToBasket";
 import Footer from "../components/MainPage/Footer";
@@ -19,16 +19,20 @@ function ProductDetailScreen({ route, navigation }) {
 
   const productId = route.params.productId;
 
-
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [selectedMaterial, setSelectedMaterial] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const result = await APIRequest("get", `Products?ProductId=${productId}`);
+        const result = await APIRequest(
+          "get",
+          `Products?ProductId=${productId}`
+        );
+
+        console.log(result)
 
         if (!result.success || !result.return) {
           console.error("Error fetching product:", result.error);
@@ -40,13 +44,26 @@ function ProductDetailScreen({ route, navigation }) {
           (picture) => `${API_URL}/${picture.Link}`
         );
 
+        const materialsResult = await APIRequest(
+          "get",
+          `ProductMaterial?ProductId=${productId}`
+        );
+
+        let materials = [];
+        if (materialsResult.success) {
+          materials = materialsResult.return.map((material) => ({
+            label: material.Label,
+            value: material.MaterialId,
+          }));
+        }
+
         setSelectedProduct({
           id: productData.ProductId,
           title: productData.Name,
           availability: productData.Stock > 0,
           description: productData.Description,
           price: productData.Price,
-          colors: ["red", "blue", "green"],
+          materials: materials,
           images: images,
         });
 
@@ -60,7 +77,7 @@ function ProductDetailScreen({ route, navigation }) {
   }, [productId]);
 
   if (isLoading) {
-    return <LoadingOverlay message="Loading information..." />
+    return <LoadingOverlay message="Loading information..." />;
   }
 
   if (!selectedProduct) {
@@ -75,42 +92,47 @@ function ProductDetailScreen({ route, navigation }) {
     setSelectedQuantity(quantity);
   }
 
-  function handleColorSelection(color) {
-    setSelectedColor(color);
+  function handleMaterialSelection(material) {
+    setSelectedMaterial(material);
   }
 
   async function handleAddToBasket() {
-    if (!selectedColor) {
-      Alert.alert("Please select a color.");
+    if (!selectedMaterial) {
+      Alert.alert("Please select material.");
       return;
     }
-  
+
     const productToAddToBasket = {
       ProductId: selectedProduct.id,
+      MaterialId: selectedMaterial,
       Quantity: selectedQuantity,
-      Price: selectedProduct.price
+      Price: selectedProduct.price,
     };
-  
+
     try {
       const resultAction = await dispatch(addBasketItem(productToAddToBasket));
       const response = unwrapResult(resultAction);
-  
+
       if (response.ProductId && response.Quantity) {
         Alert.alert("Success", "Product added to basket.");
       } else {
-        Alert.alert("Error", response && response.error ? response.error.toString() : "Failed to add product to basket.");
-      }      
+        Alert.alert(
+          "Error",
+          response && response.error
+            ? response.error.toString()
+            : "Failed to add product to basket."
+        );
+      }
     } catch (error) {
       if (error.message) {
         Alert.alert("Error", error.message.toString());
-      } else if (typeof error === 'object') {
+      } else if (typeof error === "object") {
         Alert.alert("Error", JSON.stringify(error));
       } else {
         Alert.alert("Error", error.toString());
       }
     }
   }
-  
 
   return (
     <ScrollView style={styles.rootContainer}>
@@ -129,18 +151,22 @@ function ProductDetailScreen({ route, navigation }) {
           <List data={[selectedProduct.description]} key="description" />
         </View>
       </View>
-      <View style={styles.selectors}>
-        <QuantitySelect
-          selectedQuantity={selectedQuantity}
-          onSelectQuantity={handleQuantitySelection}
-        />
-        {selectedProduct.colors && (
-          <ColorSelector
-            colors={selectedProduct.colors}
-            selectedColor={selectedColor}
-            onSelectColor={handleColorSelection}
+      <View>
+        <View style={styles.selectors}>
+          <QuantitySelect
+            selectedQuantity={selectedQuantity}
+            onSelectQuantity={handleQuantitySelection}
           />
-        )}
+          {selectedProduct.materials.length > 0 && (
+            <RNPickerSelect
+              onValueChange={handleMaterialSelection}
+              items={selectedProduct.materials}
+              placeholder={{ label: "Select material : ", value: null }}
+              style={pickerStyles}
+              testID="material-picker"
+            />
+          )}
+        </View>
         <AvailabilityMessage stock={selectedProduct.availability} />
         <View style={styles.addBasket}>
           <AddToBasketButton onPress={handleAddToBasket} />
@@ -169,7 +195,7 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 18,
-    marginHorizontal: "auto",
+    textAlign: "center",
   },
   box: {
     marginHorizontal: "auto",
@@ -183,12 +209,36 @@ const styles = StyleSheet.create({
   },
   selectors: {
     marginVertical: 20,
+    alignItems: "center",
+    marginHorizontal: 50,
   },
   addBasket: {
     alignItems: "center",
-    marginHorizontal: "auto",
     justifyContent: "center",
-    width: 300,
+    width: "100%",
     marginVertical: 20,
+  },
+});
+
+const pickerStyles = StyleSheet.create({
+  inputIOS: {
+    height: 50,
+    fontFamily: "shinko-font",
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center", // Center text within the picker
+  },
+  inputAndroid: {
+    height: 50,
+    fontFamily: "shinko-font",
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center", // Center text within the picker
   },
 });

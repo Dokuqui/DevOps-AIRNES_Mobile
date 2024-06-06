@@ -5,7 +5,7 @@ function AvailabilityMessage({ stock }) {
   return (
     <View style={styles.rootContainer}>
       <Text style={styles.label}>
-        Available:{" "}
+        Availability:{" "}
         <Text
           style={[
             styles.availableText,

@@ -58,7 +58,6 @@ function AuthContent({ isLogin, onAuthenticate }) {
       });
       return;
     }
-    console.log("Passing to onAuthenticate:", { firstName, lastName, email, password });
     onAuthenticate({ firstName, lastName, email, password });
   }
 

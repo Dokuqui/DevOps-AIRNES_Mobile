@@ -7,6 +7,7 @@ export const addBasketItem = createAsyncThunk(
     try {
       const response = await APIRequest("post", "ProductOrder/add", {
         ProductId: productToAddToBasket.ProductId,
+        MaterialId: productToAddToBasket.MaterialId,
         Quantity: productToAddToBasket.Quantity,
         Price: productToAddToBasket.Price,
       });

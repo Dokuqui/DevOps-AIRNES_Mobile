@@ -197,289 +197,227 @@ exports[`ProductDetailScreen renders correctly with fetched product data 1`] = `
         </View>
       </View>
     </View>
-    <View
-      style={
-        {
-          "marginVertical": 20,
-        }
-      }
-    >
+    <View>
       <View
         style={
           {
             "alignItems": "center",
-            "flexDirection": "row",
+            "flexDirection": "column",
             "justifyContent": "center",
-            "marginVertical": 8,
+            "marginVertical": 20,
           }
         }
       >
-        <Text
-          style={
-            {
-              "fontFamily": "open-bold",
-              "marginRight": 8,
-            }
-          }
-        >
-          Quantity:
-        </Text>
         <View
-          accessibilityState={
-            {
-              "busy": undefined,
-              "checked": undefined,
-              "disabled": undefined,
-              "expanded": undefined,
-              "selected": undefined,
-            }
-          }
-          accessibilityValue={
-            {
-              "max": undefined,
-              "min": undefined,
-              "now": undefined,
-              "text": undefined,
-            }
-          }
-          accessible={true}
-          collapsable={false}
-          focusable={true}
-          onClick={[Function]}
-          onResponderGrant={[Function]}
-          onResponderMove={[Function]}
-          onResponderRelease={[Function]}
-          onResponderTerminate={[Function]}
-          onResponderTerminationRequest={[Function]}
-          onStartShouldSetResponder={[Function]}
           style={
             {
-              "backgroundColor": "white",
-              "borderRadius": 25,
-              "marginHorizontal": 5,
-              "opacity": 1,
-              "paddingHorizontal": 20,
-              "paddingVertical": 10,
+              "alignItems": "center",
+              "flexDirection": "row",
+              "justifyContent": "center",
+              "marginVertical": 8,
             }
           }
         >
           <Text
             style={
               {
-                "color": "black",
                 "fontFamily": "open-bold",
-                "fontSize": 16,
-                "textAlign": "center",
+                "marginRight": 8,
               }
             }
           >
-            -
+            Quantity:
           </Text>
-        </View>
-        <Text
-          style={
-            {
-              "fontFamily": "open-bold",
-              "fontSize": 16,
-              "marginHorizontal": 8,
+          <View
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
             }
-          }
-        >
-          1
-        </Text>
-        <View
-          accessibilityState={
-            {
-              "busy": undefined,
-              "checked": undefined,
-              "disabled": undefined,
-              "expanded": undefined,
-              "selected": undefined,
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
             }
-          }
-          accessibilityValue={
-            {
-              "max": undefined,
-              "min": undefined,
-              "now": undefined,
-              "text": undefined,
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "backgroundColor": "white",
+                "borderRadius": 25,
+                "marginHorizontal": 5,
+                "opacity": 1,
+                "paddingHorizontal": 20,
+                "paddingVertical": 10,
+              }
             }
-          }
-          accessible={true}
-          collapsable={false}
-          focusable={true}
-          onClick={[Function]}
-          onResponderGrant={[Function]}
-          onResponderMove={[Function]}
-          onResponderRelease={[Function]}
-          onResponderTerminate={[Function]}
-          onResponderTerminationRequest={[Function]}
-          onStartShouldSetResponder={[Function]}
-          style={
-            {
-              "backgroundColor": "white",
-              "borderRadius": 25,
-              "marginHorizontal": 5,
-              "opacity": 1,
-              "paddingHorizontal": 20,
-              "paddingVertical": 10,
-            }
-          }
-        >
+          >
+            <Text
+              style={
+                {
+                  "color": "black",
+                  "fontFamily": "open-bold",
+                  "fontSize": 16,
+                  "textAlign": "center",
+                }
+              }
+            >
+              -
+            </Text>
+          </View>
           <Text
             style={
               {
-                "color": "black",
                 "fontFamily": "open-bold",
                 "fontSize": 16,
-                "textAlign": "center",
+                "marginHorizontal": 8,
               }
             }
           >
-            +
+            1
           </Text>
-        </View>
-      </View>
-      <View
-        style={
-          {
-            "alignItems": "center",
-            "flexDirection": "row",
-            "justifyContent": "center",
-            "marginVertical": 8,
-          }
-        }
-      >
-        <Text
-          style={
-            {
-              "fontFamily": "open-bold",
-              "marginRight": 8,
+          <View
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
             }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "backgroundColor": "white",
+                "borderRadius": 25,
+                "marginHorizontal": 5,
+                "opacity": 1,
+                "paddingHorizontal": 20,
+                "paddingVertical": 10,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "black",
+                  "fontFamily": "open-bold",
+                  "fontSize": 16,
+                  "textAlign": "center",
+                }
+              }
+            >
+              +
+            </Text>
+          </View>
+        </View>
+        <View
+          style={
+            [
+              {
+                "alignSelf": "stretch",
+              },
+              undefined,
+            ]
           }
         >
-          Color:
-        </Text>
-        <View
-          accessibilityState={
-            {
-              "busy": undefined,
-              "checked": undefined,
-              "disabled": undefined,
-              "expanded": undefined,
-              "selected": undefined,
+          <View
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
             }
-          }
-          accessibilityValue={
-            {
-              "max": undefined,
-              "min": undefined,
-              "now": undefined,
-              "text": undefined,
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
             }
-          }
-          accessible={true}
-          collapsable={false}
-          focusable={true}
-          onClick={[Function]}
-          onResponderGrant={[Function]}
-          onResponderMove={[Function]}
-          onResponderRelease={[Function]}
-          onResponderTerminate={[Function]}
-          onResponderTerminationRequest={[Function]}
-          onStartShouldSetResponder={[Function]}
-          style={
-            {
-              "backgroundColor": "red",
-              "borderRadius": 12,
-              "height": 24,
-              "marginHorizontal": 4,
-              "opacity": 1,
-              "width": 24,
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "opacity": 1,
+              }
             }
-          }
-          testID="color-selector-red"
-        />
-        <View
-          accessibilityState={
-            {
-              "busy": undefined,
-              "checked": undefined,
-              "disabled": undefined,
-              "expanded": undefined,
-              "selected": undefined,
-            }
-          }
-          accessibilityValue={
-            {
-              "max": undefined,
-              "min": undefined,
-              "now": undefined,
-              "text": undefined,
-            }
-          }
-          accessible={true}
-          collapsable={false}
-          focusable={true}
-          onClick={[Function]}
-          onResponderGrant={[Function]}
-          onResponderMove={[Function]}
-          onResponderRelease={[Function]}
-          onResponderTerminate={[Function]}
-          onResponderTerminationRequest={[Function]}
-          onStartShouldSetResponder={[Function]}
-          style={
-            {
-              "backgroundColor": "blue",
-              "borderRadius": 12,
-              "height": 24,
-              "marginHorizontal": 4,
-              "opacity": 1,
-              "width": 24,
-            }
-          }
-          testID="color-selector-blue"
-        />
-        <View
-          accessibilityState={
-            {
-              "busy": undefined,
-              "checked": undefined,
-              "disabled": undefined,
-              "expanded": undefined,
-              "selected": undefined,
-            }
-          }
-          accessibilityValue={
-            {
-              "max": undefined,
-              "min": undefined,
-              "now": undefined,
-              "text": undefined,
-            }
-          }
-          accessible={true}
-          collapsable={false}
-          focusable={true}
-          onClick={[Function]}
-          onResponderGrant={[Function]}
-          onResponderMove={[Function]}
-          onResponderRelease={[Function]}
-          onResponderTerminate={[Function]}
-          onResponderTerminationRequest={[Function]}
-          onStartShouldSetResponder={[Function]}
-          style={
-            {
-              "backgroundColor": "green",
-              "borderRadius": 12,
-              "height": 24,
-              "marginHorizontal": 4,
-              "opacity": 1,
-              "width": 24,
-            }
-          }
-          testID="color-selector-green"
-        />
+            testID="ios_touchable_wrapper"
+          >
+            <View
+              pointerEvents="box-only"
+            >
+              <TextInput
+                editable={false}
+                style={
+                  [
+                    {
+                      "alignItems": "center",
+                      "borderColor": "gray",
+                      "borderRadius": 5,
+                      "borderWidth": 1,
+                      "fontFamily": "shinko-font",
+                      "height": 50,
+                      "justifyContent": "center",
+                      "marginRight": 5,
+                      "width": 200,
+                    },
+                    {
+                      "color": "#c7c7cd",
+                    },
+                  ]
+                }
+                testID="text_input"
+                value="Select material"
+              />
+            </View>
+          </View>
+        </View>
       </View>
       <View
         style={
@@ -497,7 +435,7 @@ exports[`ProductDetailScreen renders correctly with fetched product data 1`] = `
             }
           }
         >
-          Available:
+          Availability:
            
           <Text
             style={

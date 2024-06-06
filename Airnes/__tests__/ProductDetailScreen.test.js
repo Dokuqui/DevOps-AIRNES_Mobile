@@ -10,20 +10,32 @@ jest.mock("@expo/vector-icons", () => ({
 }));
 
 jest.mock("../components/util/helper.js", () => ({
-  APIRequest: jest.fn().mockResolvedValue({
-    success: true,
-    return: {
-      ProductId: 1,
-      Name: "Product 1",
-      Description: "Lorem ipsum",
-      Price: "22.00",
-      Stock: 10,
-      Pictures: [
-        {
-          Link: "https://example.com/product1.jpg",
+  APIRequest: jest.fn((method, url) => {
+    if (url.includes("Products")) {
+      return Promise.resolve({
+        success: true,
+        return: {
+          ProductId: 1,
+          Name: "Product 1",
+          Description: "Lorem ipsum",
+          Price: "22.00",
+          Stock: 10,
+          Pictures: [
+            {
+              Link: "https://example.com/product1.jpg",
+            },
+          ],
         },
-      ],
-    },
+      });
+    } else if (url.includes("ProductMaterial")) {
+      return Promise.resolve({
+        success: true,
+        return: [
+          { MaterialId: 1, Label: "Material 1" },
+          { MaterialId: 2, Label: "Material 2" },
+        ],
+      });
+    }
   }),
 }));
 

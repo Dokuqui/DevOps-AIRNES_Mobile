@@ -1,7 +1,7 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { GlobalStyles } from "../../constants/style";
 
-const BasketButton = ({ title, onPress, style, textStyle }) => {
+const BasketButton = ({ title, onPress, style }) => {
   return (
     <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
       <Text style={styles.buttonText}>{title}</Text>

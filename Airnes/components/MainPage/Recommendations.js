@@ -15,9 +15,9 @@ const Recommendations = ({ recommendedProducts, onPress, image }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Recommended Products:</Text>
       <View style={styles.productContainer}>
-        {recommendedProducts.map((product) => (
+        {recommendedProducts.map((product, index) => (
           <Pressable
-            key={product.id}
+            key={index}
             android_ripple={{ color: "#ccc" }}
             style={({ pressed }) => [
               styles.button,

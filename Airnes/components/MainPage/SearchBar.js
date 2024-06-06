@@ -6,7 +6,6 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
-
 import { GlobalStyles } from "../../constants/style";
 
 function SearchBar({ onSearch, query }) {
