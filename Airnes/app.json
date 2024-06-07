@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Airnes",
-    "slug": "Airnes",
+    "slug": "airneis-v-nxevq7hrzzuqqrmzo2b",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,6 +28,12 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "47db086c-cbef-4407-8dca-6847fbc45c65"
+      }
+    },
+    "owner": "dokucloud"
   }
 }
