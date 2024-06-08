@@ -1,5 +1,6 @@
 # DevOps-AIRNES_Mobile
 Mobile application repo for annual project <strong>Airnes</strong><br>
+Also as you can see on main screen of repo exist `.apk` file of this application to make upoading and use easier.
 <hr>
 Web-site: [Airnes](https://github.com/Dokuqui/DevOps-AIRNES) <br>
 <hr>
